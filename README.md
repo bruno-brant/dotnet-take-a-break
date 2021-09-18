@@ -47,4 +47,4 @@ dotnet test
 ---
 
 Sleepy icon made by [Freepik](https://www.flaticon.com/authors/freepik).
-Active and resting icon were based on the sleepy icon.
+Active and resting icon made by me, based on the sleepy icon.
