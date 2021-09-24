@@ -24,7 +24,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish
-      run: dotnet publish -c Release -o release/win-x64/ --self-contained -r win-x64
+      run: dotnet publish -c Release -o release/win-x64/ --self-contained --runtime win-x64
     - name: Release
       uses: fnkr/github-action-ghr@v1        
       env:
