@@ -30,7 +30,7 @@ namespace RestLittle.UI.Models
 		/// <summary>
 		/// Used to control elapsed time that is fed into <see cref="RestingMonitor"/>.
 		/// </summary>
-		private readonly Stopwatch _stopwatch;
+		private readonly Stopwatch _stopwatch = new Stopwatch();
 
 		/// <summary>
 		/// Whether the object is disposed.
@@ -43,8 +43,6 @@ namespace RestLittle.UI.Models
 		/// <param name="restingMonitor">Service that monitors user resting time.</param>
 		public TrayIconModel(IRestingMonitor restingMonitor)
 		{
-			_stopwatch = new Stopwatch();
-
 			_stopwatch.Start();
 			_updater = new RepeatingEvent(UpdateMonitor, _updateInterval);
 			_updater.Start();
