@@ -60,8 +60,8 @@ namespace RestLittle.UI.Plumbing
 		{
 			while (_running)
 			{
-				_callback();
 				Thread.Sleep(_interval);
+				_callback();
 			}
 		}
 	}
