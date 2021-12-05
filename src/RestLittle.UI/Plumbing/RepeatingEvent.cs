@@ -22,7 +22,7 @@ namespace RestLittle.UI.Plumbing
 		///     The action to run after the inverval.
 		/// </param>
 		/// <param name="interval">
-		///     How long to wait after action is done until calling it again.
+		///     How long to wait after the action is done until calling it again.
 		/// </param>
 		public RepeatingEvent(Action callback, TimeSpan interval)
 		{

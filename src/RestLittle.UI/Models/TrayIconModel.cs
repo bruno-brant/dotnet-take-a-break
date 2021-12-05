@@ -30,7 +30,7 @@ namespace RestLittle.UI.Models
 		/// <summary>
 		/// Used to control elapsed time that is fed into <see cref="RestingMonitor"/>.
 		/// </summary>
-		private readonly Stopwatch _stopwatch = new Stopwatch();
+		private readonly Stopwatch _stopwatch = new ();
 
 		/// <summary>
 		/// Whether the object is disposed.

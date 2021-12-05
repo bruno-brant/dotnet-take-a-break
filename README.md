@@ -1,6 +1,8 @@
 ![logo](https://raw.githubusercontent.com/bruno-brant/rest-a-little/master/logo.png) 
-Take-A-Break
+Take-A-Break 
 =============
+
+![badge](https://github.com/bruno-brant/dotnet-take-a-break/actions/workflows/dotnet.yml/badge.svg)
 
 Small Windows utility to remind the user it's time to take a break from the computer.
 

@@ -17,7 +17,10 @@ namespace RestLittle.UI.Views
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TrayIconView"/> class.
 		/// </summary>
-		public TrayIconView(RestingMonitor restingMonitor)
+		/// <param name="restingMonitor">
+		/// Dependency. Service that monitors the working and resting of users.
+		/// </param>
+		public TrayIconView(IRestingMonitor restingMonitor)
 		{
 			InitializeComponent();
 
@@ -26,9 +29,11 @@ namespace RestLittle.UI.Views
 			components.Add(trayIconModel);
 
 #pragma warning disable CA2000 // Dispose objects before losing scope
+
 			// TODO: inject Settings
 			var trayIconPresenter = new TrayIconPresenter(Settings.Default, this, trayIconModel);
 			components.Add(trayIconPresenter);
+
 #pragma warning restore CA2000 // Dispose objects before losing scope
 		}
 
