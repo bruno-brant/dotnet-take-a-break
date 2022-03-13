@@ -45,18 +45,15 @@ namespace RestLittle.UI.Presenters
 			@event?.Invoke(this, new EventArgs());
 		}
 
-		/// <summary>
-		/// Converts an string of seconds to TimeSpan.
-		/// </summary>
-		/// <param name="secondsString">
-		/// The string to be converted.
-		/// </param>
-		/// <returns>
-		/// A timespan representation of the string.
-		/// </returns>
-		private static TimeSpan FromSeconds(string secondsString)
+		/// <inheritdoc/>
+		protected override void Dispose(bool disposing)
 		{
-			return TimeSpan.FromSeconds(int.Parse(secondsString, CultureInfo.CurrentCulture));
+			base.Dispose(disposing);
+
+			if (disposing)
+			{
+				Disposed?.Invoke(this, EventArgs.Empty);
+			}
 		}
 
 		/// <summary>

@@ -4,13 +4,14 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using RestLittle.UI.Plumbing;
+using RestLittle.UI.Presenters;
 
 namespace RestLittle.UI.Models
 {
 	/// <summary>
 	/// A model that encapsulates a <see cref="RestingMonitor"/>.
 	/// </summary>
-	public class TrayIconModel : IDisposable, IComponent
+	public class TrayIconModel : IDisposable, IComponent, ITrayIconModel
 	{
 		/// <summary>
 		/// Instance of _restingMonitor used by this class.
@@ -50,35 +51,19 @@ namespace RestLittle.UI.Models
 			_restingMonitor = restingMonitor ?? throw new ArgumentNullException(nameof(restingMonitor));
 		}
 
-		/// <summary>
-		/// Called whenever the resting monitor is updated.
-		/// </summary>
+		/// <inheritdoc/>
 		public event EventHandler RestingMonitorUpdated;
 
 		/// <inheritdoc/>
 		public event EventHandler Disposed;
 
-		/// <summary>
-		///     Gets the accumulated WORKING time since the user was last considered rested.
-		/// </summary>
-		/// <remarks>
-		///     User is considered rested once he's idle for at least
-		///     <see cref="IRestingMonitorConfiguration.RestingTime"/>.
-		/// </remarks>
+		/// <inheritdoc/>
 		public TimeSpan BusyTimeSinceRested => _restingMonitor.TotalBusyTimeSinceRested;
 
-		/// <summary>
-		///     Gets the accumulated RESTING time since the user was last considered rested.
-		/// </summary>
-		/// <remarks>
-		///     User is considered rested once he's idle for at least
-		///     <see cref="IRestingMonitorConfiguration.RestingTime"/>.
-		/// </remarks>
+		/// <inheritdoc/>
 		public TimeSpan IdleTimeSinceRested => _restingMonitor.TotalIdleTimeSinceRested;
 
-		/// <summary>
-		/// Gets the last status of the user.
-		/// </summary>
+		/// <inheritdoc/>
 		public UserStatus LastStatus
 		{
 			get
@@ -97,9 +82,7 @@ namespace RestLittle.UI.Models
 			}
 		}
 
-		/// <summary>
-		/// Gets a value indicating whether the user must rest.
-		/// </summary>
+		/// <inheritdoc/>
 		public bool MustRest => _restingMonitor.MustRest;
 
 		/// <inheritdoc/>
@@ -127,18 +110,13 @@ namespace RestLittle.UI.Models
 					_updater.Stop(TimeSpan.FromSeconds(5));
 				}
 
+				Disposed?.Invoke(this, EventArgs.Empty);
+
 				// TODO: free unmanaged resources (unmanaged objects) and override finalizer
 				// TODO: set large fields to null
 				_disposedValue = true;
 			}
 		}
-
-		// // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-		// ~RestingMonitorModel()
-		// {
-		//     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-		//     Dispose(disposing: false);
-		// }
 
 		/// <summary>
 		/// Ran when the timer ticks.

@@ -21,7 +21,7 @@ namespace RestLittle
 		///     by being able to call _elapsed[Status] instead of having to switch
 		///     all the time.
 		/// </remarks>
-		private readonly Dictionary<InteractionStatus, TimeSpan> _elapsedTimeSinceRested = new Dictionary<InteractionStatus, TimeSpan>
+		private readonly Dictionary<InteractionStatus, TimeSpan> _elapsedTimeSinceRested = new ()
 		{
 			[InteractionStatus.Busy] = TimeSpan.Zero,
 			[InteractionStatus.Idle] = TimeSpan.Zero,

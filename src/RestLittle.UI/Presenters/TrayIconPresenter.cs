@@ -17,7 +17,7 @@ namespace RestLittle.UI.Presenters
 		/// <summary>
 		/// The model that this presenter uses.
 		/// </summary>
-		private readonly TrayIconModel _restingMonitorModel;
+		private readonly ITrayIconModel _trayIconModel;
 
 		/// <summary>
 		/// Configuration for this presenter.
@@ -48,14 +48,14 @@ namespace RestLittle.UI.Presenters
 		/// <param name="trayIconView">
 		///    View that controls the tray icon.
 		/// </param>
-		/// <param name="restingMonitorModel">The model controlled by this presenter.</param>
-		public TrayIconPresenter(ITrayIconViewConfiguration configuration, ITrayIconView trayIconView, TrayIconModel restingMonitorModel)
+		/// <param name="trayIconModel">The model controlled by this presenter.</param>
+		public TrayIconPresenter(ITrayIconViewConfiguration configuration, ITrayIconView trayIconView, ITrayIconModel trayIconModel)
 		{
 			_configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 			_trayIconView = trayIconView ?? throw new ArgumentNullException(nameof(trayIconView));
-			_restingMonitorModel = restingMonitorModel ?? throw new ArgumentNullException(nameof(restingMonitorModel));
+			_trayIconModel = trayIconModel ?? throw new ArgumentNullException(nameof(trayIconModel));
 
-			_restingMonitorModel.RestingMonitorUpdated += RestingMonitorModel_RestingMonitorUpdated;
+			_trayIconModel.RestingMonitorUpdated += RestingMonitorModel_RestingMonitorUpdated;
 
 			_trayIconView.ShowConfigurationClicked += TrayIconView_ShowConfigurationClicked;
 			_trayIconView.PauseUnpauseClicked += TrayIconView_PauseUnpauseClicked;
@@ -100,8 +100,8 @@ namespace RestLittle.UI.Presenters
 					// TODO: dispose managed state (managed objects)
 				}
 
-				// TODO: free unmanaged resources (unmanaged objects) and override finalizer
-				// TODO: set large fields to null
+				Disposed?.Invoke(this, EventArgs.Empty);
+
 				_disposedValue = true;
 			}
 		}
@@ -145,9 +145,9 @@ namespace RestLittle.UI.Presenters
 
 		private void RestingMonitorModel_RestingMonitorUpdated(object sender, EventArgs e)
 		{
-			var busyElapsed = _restingMonitorModel.BusyTimeSinceRested.ToFriendlyString();
-			var idleElapsed = _restingMonitorModel.IdleTimeSinceRested.ToFriendlyString();
-			var icon = GetIcon(_restingMonitorModel.LastStatus);
+			var busyElapsed = _trayIconModel.BusyTimeSinceRested.ToFriendlyString();
+			var idleElapsed = _trayIconModel.IdleTimeSinceRested.ToFriendlyString();
+			var icon = GetIcon(_trayIconModel.LastStatus);
 
 			// avoid repainting the icon
 			if (_trayIconView.Icon != icon.ToIcon())
@@ -157,7 +157,8 @@ namespace RestLittle.UI.Presenters
 
 			_trayIconView.Status = $"You've been busy for {busyElapsed} and idle for {idleElapsed}".Truncate(63, true);
 
-			if (_restingMonitorModel.MustRest
+			if (_trayIconModel.MustRest
+				&& _trayIconModel.LastStatus != UserStatus.Resting
 				&& _lastWarning.UntilNow() > _configuration.WarningInterval)
 			{
 				var tipText = $"Please go rest! You haven't rested for {busyElapsed}.";
@@ -166,12 +167,5 @@ namespace RestLittle.UI.Presenters
 				_lastWarning = DateTime.Now;
 			}
 		}
-
-		// // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-		// ~TrayIconPresenter()
-		// {
-		//     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-		//     Dispose(disposing: false);
-		// }
 	}
 }

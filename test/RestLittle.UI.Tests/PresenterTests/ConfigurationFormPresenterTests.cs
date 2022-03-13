@@ -2,7 +2,6 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using AutoFixture;
 using AutoFixture.Xunit2;
 using NSubstitute;
@@ -13,7 +12,7 @@ namespace RestLittle.UI.Tests.PresenterTests
 {
 	public class ConfigurationFormPresenterTests
 	{
-		private readonly Fixture _fixture = new Fixture();
+		private readonly Fixture _fixture = new ();
 
 		[Theory, AutoData]
 		public void Load_CarriesDataFromModel(Settings model)
