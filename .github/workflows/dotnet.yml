@@ -33,6 +33,6 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest"
           prerelease: false
-          title: "Release Win-x64 1.0.0.${{ GITHUB_RUN_NUMBER }}-win.x64"
+          title: "Release Win-x64 1.0.0.${{ github.GITHUB_RUN_NUMBER }}-win.x64"
           files: |
             release/win-x64/**/*.*
