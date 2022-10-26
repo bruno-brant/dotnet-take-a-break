@@ -26,16 +26,13 @@ jobs:
     - name: Publish win64
       run: dotnet publish .\src\RestLittle.UI\RestLittle.UI.csproj --runtime win-x64 -c Release -o release/win-x64/ --self-contained
     - name: Publish win86
-      run: dotnet publish .\src\RestLittle.UI\RestLittle.UI.csproj --runtime win-x86 -c Release -o release/win-x86/ --self-contained
-    - name: Release win-x64
-      uses: fnkr/github-action-ghr@v1
-      env:
-        GHR_COMPRESS: xz
-        GHR_PATH: release/win-x64
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Release win-x86
-      uses: fnkr/github-action-ghr@v1
-      env:
-        GHR_COMPRESS: xz
-        GHR_PATH: release/win-x86
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: dotnet publish .\src\RestLittle.UI\RestLittle.UI.csproj --runtime win-x86 -c Release -o release/win-x86/ --self-contained    
+    - name: Release win64
+      uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+          title: "Release Win-x64 1.0.0.${{ GITHUB_RUN_NUMBER }}-win.x64"
+          files: |
+            release/win-x64/**/*.*
