@@ -35,4 +35,4 @@ jobs:
           prerelease: false
           title: "Release Win-x64 1.0.0.${{ github.GITHUB_RUN_NUMBER }}-win.x64"
           files: |
-            release/win-x64/**/*.*
+            release/win-x64/
