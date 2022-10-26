@@ -7,8 +7,10 @@ on:
     branches: [ master ]
 
 jobs:
+  
   build:
-
+    env:
+      VERSION_STAMP: 1.0.0.${{ github.GITHUB_RUN_NUMBER }}
     runs-on: windows-latest
 
     steps:
@@ -25,14 +27,32 @@ jobs:
       run: dotnet test --no-build --verbosity normal
     - name: Publish win64
       run: dotnet publish .\src\RestLittle.UI\RestLittle.UI.csproj --runtime win-x64 -c Release -o releases/win-x64/ --self-contained
+    - name: Zip win64      
+      uses: vimtor/action-zip@v1
+      with:
+        # Files or directories to zip
+        files: |
+          releases/win-x64/
+        # Name of output zip file
+        dest: "${{ env.VERSION_STAMP }}-win64"
     - name: Publish win86
-      run: dotnet publish .\src\RestLittle.UI\RestLittle.UI.csproj --runtime win-x86 -c Release -o releases/win-x86/ --self-contained    
+      run: dotnet publish .\src\RestLittle.UI\RestLittle.UI.csproj --runtime win-x86 -c Release -o releases/win-x86/ --self-contained
+    - name: Zip win86
+      uses: vimtor/action-zip@v1
+      with:
+        # Files or directories to zip
+        files: |
+          releases/win-x86/
+        # Name of output zip file
+        dest: "${{ env.VERSION_STAMP }}-win86"
+    
     - name: Release win64
       uses: "marvinpinto/action-automatic-releases@latest"
       with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "1.0.0.${{ github.GITHUB_RUN_NUMBER }}-win.x64"
+          automatic_release_tag: ${{ env.VERSION_STAMP }}
           prerelease: false
-          title: "Release Win-x64 1.0.0.${{ github.GITHUB_RUN_NUMBER }}-win.x64"
+          title: "Release Win-x64 1.0.0.${{ github.GITHUB_RUN_NUMBER }}"
           files: |
-            releases/win-x64/
+            "${{ env.VERSION_STAMP }}-win64"
+            "${{ env.VERSION_STAMP }}-win86"
