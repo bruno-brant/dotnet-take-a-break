@@ -10,12 +10,14 @@ jobs:
   
   build:
     env:
-      VERSION_STAMP: "1.0.0.$GITHUB_RUN_NUMBER"
+      VERSION_STAMP: "1.0.0.${{ github.GITHUB_RUN_NUMBER }}"
     runs-on: windows-latest
 
     steps:
     - name: Check version
       run: echo $VERSION_STAMP
+    - name: Check version 2
+      run: env
       
     - uses: actions/checkout@v2
     - name: Setup .NET
