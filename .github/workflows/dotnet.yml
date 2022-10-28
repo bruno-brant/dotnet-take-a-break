@@ -10,15 +10,10 @@ jobs:
   
   build:
     env:
-      VERSION_STAMP: "1.0.0.${{ github.GITHUB_RUN_NUMBER }}"
+      VERSION_STAMP: ""
     runs-on: windows-latest
 
-    steps:
-    - name: Check version
-      run: echo $VERSION_STAMP
-    - name: Check version 2
-      run: env
-      
+    steps:      
     - uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
@@ -41,7 +36,7 @@ jobs:
         files: |
           releases/win-x64/
         # Name of output zip file
-        dest: "${{ env.VERSION_STAMP }}-win64.zip"
+        dest: "1.0.0.${{ github.GITHUB_RUN_NUMBER }}-win64.zip"
         recursive: true
         
     - name: Publish win86
@@ -54,15 +49,15 @@ jobs:
         files: |
           releases/win-x86/
         # Name of output zip file
-        dest: "${{ env.VERSION_STAMP }}-win86.zip"
+        dest: "1.0.0.${{ github.GITHUB_RUN_NUMBER }}-win86.zip"
     
     - name: Release win64
       uses: "marvinpinto/action-automatic-releases@latest"
       with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "${{ env.VERSION_STAMP }}"
+          automatic_release_tag: "1.0.0.${{ github.GITHUB_RUN_NUMBER }}"
           prerelease: false
-          title: "Release ${{ env.VERSION_STAMP }}"
+          title: "Release 1.0.0.${{ github.GITHUB_RUN_NUMBER }}"
           files: |
-            "${{ env.VERSION_STAMP }}-win64.zip"
-            "${{ env.VERSION_STAMP }}-win86.zip"
+            "1.0.0.${{ github.GITHUB_RUN_NUMBER }}-win64.zip"
+            "1.0.0.${{ github.GITHUB_RUN_NUMBER }}-win86.zip"
