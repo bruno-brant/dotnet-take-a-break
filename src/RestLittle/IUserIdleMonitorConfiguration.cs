@@ -2,16 +2,15 @@
 
 using System;
 
-namespace RestLittle
+namespace TakeABreak;
+
+/// <summary>
+/// Configuration for service <see cref="UserIdleMonitor"/>.
+/// </summary>
+public interface IUserIdleMonitorConfiguration
 {
 	/// <summary>
-	/// Configuration for service <see cref="UserIdleMonitor"/>.
+	/// Gets the minimum amount of time without using the computer that is considered to be idle.
 	/// </summary>
-	public interface IUserIdleMonitorConfiguration
-	{
-		/// <summary>
-		/// Gets the minimum amount of time without using the computer that is considered to be idle.
-		/// </summary>
-		TimeSpan TimeToIdle { get; }
-	}
+	TimeSpan TimeToIdle { get; }
 }

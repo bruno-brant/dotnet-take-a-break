@@ -1,6 +1,6 @@
 // Copyright (c) Bruno Brant. All rights reserved.
 
-namespace RestLittle.UI.Models
+namespace TakeABreak.UI.Models
 {
 	/// <summary>
 	/// The status of the user.

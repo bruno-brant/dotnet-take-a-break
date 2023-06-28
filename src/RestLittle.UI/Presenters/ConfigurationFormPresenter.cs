@@ -4,9 +4,9 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using RestLittle.UI.Plumbing;
+using TakeABreak.UI.Plumbing;
 
-namespace RestLittle.UI.Presenters
+namespace TakeABreak.UI.Presenters
 {
 	/// <summary>
 	/// A presenter from MVP for the ConfigurationFormView.

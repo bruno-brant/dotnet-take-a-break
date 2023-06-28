@@ -4,7 +4,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 
-namespace RestLittle.UI.Plumbing
+namespace TakeABreak.UI.Plumbing
 {
 	/// <summary>
 	/// Declarative validations for a <see cref="TimeSpan"/> field.

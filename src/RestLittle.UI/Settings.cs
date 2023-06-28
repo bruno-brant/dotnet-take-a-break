@@ -2,10 +2,10 @@
 
 using System;
 using System.Configuration;
-using RestLittle.UI.Presenters;
-using RestLittle.UI.Views;
+using TakeABreak.UI.Presenters;
+using TakeABreak.UI.Views;
 
-namespace RestLittle.UI
+namespace TakeABreak.UI
 {
 	/// <summary>
 	/// Model for the <see cref="ConfigurationFormView"/>.

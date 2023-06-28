@@ -1,9 +1,9 @@
 // Copyright (c) Bruno Brant. All rights reserved.
 
 using System;
-using RestLittle.UI.Models;
+using TakeABreak.UI.Models;
 
-namespace RestLittle.UI.Presenters
+namespace TakeABreak.UI.Presenters
 {
 	/// <summary>
 	/// Model used by the <see cref="TrayIconPresenter"/>.

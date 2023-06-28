@@ -3,7 +3,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace RestLittle.UI.Views
+namespace TakeABreak.UI.Views
 {
 	/// <summary>
 	/// Specialized version of <see cref="DateTimePicker"/> that displays a timespan.

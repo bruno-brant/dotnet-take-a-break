@@ -3,10 +3,10 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using RestLittle.UI.Models;
-using RestLittle.UI.Presenters;
+using TakeABreak.UI.Models;
+using TakeABreak.UI.Presenters;
 
-namespace RestLittle.UI.Views
+namespace TakeABreak.UI.Views
 {
 	/// <summary>
 	/// Implements an icon that is available at the system tray to control the

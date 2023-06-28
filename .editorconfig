@@ -15,9 +15,13 @@ dotnet_diagnostic.SA1101.severity = none
 # SA1309: Field names should not begin with underscore - The current style is to prefix private elements with an _
 dotnet_diagnostic.SA1309.severity = none
 
+# SA1512: Single-line comments must not be followed by a blank line - Yeah when commenting out code
+dotnet_diagnostic.SA1512.severity = none
+
 ## Code Analysis ##
 
-# CA1303: Do not pass literals as localized parameters - O sistema será apenas para a audiência brasileira.
+# CA1303: Do not pass literals as localized parameters - Might be dealt with later
+# TODO: Enable this rule
 dotnet_diagnostic.CA1303.severity = none
 
 # CA2007: Consider calling ConfigureAwait on the awaited task - disabled since this isn't a GUI project

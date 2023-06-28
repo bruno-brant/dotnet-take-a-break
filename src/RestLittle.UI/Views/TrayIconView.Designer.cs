@@ -1,4 +1,4 @@
-namespace RestLittle.UI.Views
+namespace TakeABreak.UI.Views
 {
 	partial class TrayIconView
 	{

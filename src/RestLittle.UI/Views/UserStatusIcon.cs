@@ -4,7 +4,7 @@ using System;
 using System.Drawing;
 using System.Globalization;
 
-namespace RestLittle.UI.Views
+namespace TakeABreak.UI.Views
 {
 	/// <summary>
 	/// List of possible user icons.

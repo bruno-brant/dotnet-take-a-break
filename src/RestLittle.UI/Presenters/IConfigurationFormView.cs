@@ -2,7 +2,7 @@
 
 using System;
 
-namespace RestLittle.UI.Presenters
+namespace TakeABreak.UI.Presenters
 {
 	/// <summary>
 	/// Represents a view of the configuration of the application.

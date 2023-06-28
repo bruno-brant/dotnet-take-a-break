@@ -3,10 +3,10 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using RestLittle.UI.Plumbing;
-using RestLittle.UI.Presenters;
+using TakeABreak.UI.Plumbing;
+using TakeABreak.UI.Presenters;
 
-namespace RestLittle.UI.Models
+namespace TakeABreak.UI.Models
 {
 	/// <summary>
 	/// A model that encapsulates a <see cref="RestingMonitor"/>.

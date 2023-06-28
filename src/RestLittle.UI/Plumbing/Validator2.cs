@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace RestLittle.UI.Plumbing
+namespace TakeABreak.UI.Plumbing
 {
 	/// <summary>
 	/// Simplify validating an object.

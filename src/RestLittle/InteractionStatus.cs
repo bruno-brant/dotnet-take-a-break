@@ -1,20 +1,19 @@
 // Copyright (c) Bruno Brant. All rights reserved.
 
-namespace RestLittle
+namespace TakeABreak;
+
+/// <summary>
+/// Informs if the user is using the computer or not.
+/// </summary>
+public enum InteractionStatus
 {
 	/// <summary>
-	/// Informs if the user is using the computer or not.
+	/// The user is idle.
 	/// </summary>
-	public enum InteractionStatus
-	{
-		/// <summary>
-		/// The user is idle.
-		/// </summary>
-		Idle,
+	Idle,
 
-		/// <summary>
-		/// The user is busy.
-		/// </summary>
-		Busy,
-	}
+	/// <summary>
+	/// The user is busy.
+	/// </summary>
+	Busy,
 }

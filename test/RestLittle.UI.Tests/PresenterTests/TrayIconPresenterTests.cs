@@ -4,33 +4,34 @@ using System;
 using System.Threading;
 using System.Windows.Forms;
 using NSubstitute;
-using RestLittle.UI.Presenters;
+using TakeABreak.UI.Presenters;
 using Xunit;
 
-namespace RestLittle.UI.Tests.PresenterTests
+namespace TakeABreak.UI.Tests.PresenterTests;
+
+public class TrayIconPresenterTests
 {
-	public class TrayIconPresenterTests
+	[Fact]
+	public void MonitorUpdated_CallShowBalloonOnlyIfUserIsntAway()
 	{
-		[Fact]
-		public void MonitorUpdated_CallShowBalloonOnlyIfUserIsntAway()
-		{
-			var configuration = Substitute.For<ITrayIconViewConfiguration>();
-			configuration.WarningInterval.Returns(TimeSpan.Zero);
+		var configuration = Substitute.For<ITrayIconViewConfiguration>();
+		configuration.WarningInterval.Returns(TimeSpan.Zero);
 
-			var iconView = Substitute.For<ITrayIconView>();
+		var iconView = Substitute.For<ITrayIconView>();
 
-			var model = Substitute.For<ITrayIconModel>();
-			model.MustRest.Returns(true);
-			model.LastStatus.Returns(Models.UserStatus.Resting);
+		var model = Substitute.For<ITrayIconModel>();
+		model.MustRest.Returns(true);
+		model.LastStatus.Returns(Models.UserStatus.Resting);
 
-			using var sut = new TrayIconPresenter(configuration, iconView, model);
+		using var sut = new TrayIconPresenter(configuration, iconView, model);
 
-			// ACT
-			Thread.Sleep(1); // make sure some time has been elapsed
-			model.RestingMonitorUpdated += Raise.Event();
+		// ACT
+		Thread.Sleep(1); // make sure some time has been elapsed
+		model.RestingMonitorUpdated += Raise.Event();
 
-			// ASSERT
-			iconView.DidNotReceiveWithAnyArgs().ShowBalloonTip(0, null, null, Arg.Any<ToolTipIcon>());
-		}
+		// ASSERT
+		iconView
+			.DidNotReceiveWithAnyArgs()
+			.ShowBalloonTip(0, Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ToolTipIcon>());
 	}
 }

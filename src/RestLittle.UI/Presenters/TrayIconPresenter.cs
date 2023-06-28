@@ -3,11 +3,11 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using RestLittle.UI.Models;
-using RestLittle.UI.Plumbing;
-using RestLittle.UI.Views;
+using TakeABreak.UI.Models;
+using TakeABreak.UI.Plumbing;
+using TakeABreak.UI.Views;
 
-namespace RestLittle.UI.Presenters
+namespace TakeABreak.UI.Presenters
 {
 	/// <summary>
 	/// A Presenter from MVP for the TrayIconView.

@@ -4,20 +4,19 @@ using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.Xunit2;
 
-namespace RestLittle.Tests
+namespace TakeABreak.Tests;
+
+/// <summary>
+/// Specialization of <see cref="AutoDataAttribute"/> to work
+/// with <see cref="NSubstitute"/>.
+/// </summary>
+public class AutoSubstituteDataAttribute : AutoDataAttribute
 {
 	/// <summary>
-	/// Specialization of <see cref="AutoDataAttribute"/> to work
-	/// with <see cref="NSubstitute"/>.
+	/// Initializes a new instance of the <see cref="AutoSubstituteDataAttribute"/> class.
 	/// </summary>
-	public class AutoSubstituteDataAttribute : AutoDataAttribute
+	public AutoSubstituteDataAttribute()
+		: base(() => new Fixture().Customize(new AutoNSubstituteCustomization()))
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AutoSubstituteDataAttribute"/> class.
-		/// </summary>
-		public AutoSubstituteDataAttribute()
-			: base(() => new Fixture().Customize(new AutoNSubstituteCustomization()))
-		{
-		}
 	}
 }

@@ -3,7 +3,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace RestLittle.UI
+namespace TakeABreak.UI
 {
 	/// <summary>
 	/// Main program entry point.

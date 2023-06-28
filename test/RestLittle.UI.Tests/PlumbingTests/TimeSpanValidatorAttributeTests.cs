@@ -1,83 +1,82 @@
 // Copyright (c) Bruno Brant. All rights reserved.
 
 using System;
-using RestLittle.UI.Plumbing;
+using TakeABreak.UI.Plumbing;
 using Xunit;
 
-namespace RestLittle.UI.Tests.PlumbingTests
+namespace TakeABreak.UI.Tests.PlumbingTests;
+
+public class TimeSpanValidatorAttributeTests
 {
-	public class TimeSpanValidatorAttributeTests
+	[Fact]
+	public void IsValid_WhenObjectIsNull_ReturnsTrue()
 	{
-		[Fact]
-		public void IsValid_WhenObjectIsNull_ReturnsTrue()
+		var sut = new TimeSpanValidatorAttribute();
+		var actual = sut.IsValid(null);
+
+		Assert.True(actual);
+	}
+
+	[Fact]
+	public void IsValid_WhenObjectNotTimeSpan_ReturnsFalse()
+	{
+		var sut = new TimeSpanValidatorAttribute();
+		var actual = sut.IsValid(new object());
+
+		Assert.False(actual);
+	}
+
+	[Fact]
+	public void IsValid_WhenOnlyMinValueSet_ThenAllowsAnyValueAboveIt()
+	{
+		var sut = new TimeSpanValidatorAttribute
 		{
-			var sut = new TimeSpanValidatorAttribute();
-			var actual = sut.IsValid(null);
+			MinValue = "00:00:01",
+		};
 
-			Assert.True(actual);
-		}
+		Assert.True(sut.IsValid(TimeSpan.FromSeconds(2)));
+		Assert.True(sut.IsValid(TimeSpan.MaxValue));
+		Assert.False(sut.IsValid(TimeSpan.FromSeconds(0)));
+	}
 
-		[Fact]
-		public void IsValid_WhenObjectNotTimeSpan_ReturnsFalse()
+	[Fact]
+	public void IsValid_WhenOnlyMaxValueSet_ThenAllowsAnyValueBelowIt()
+	{
+		var sut = new TimeSpanValidatorAttribute
 		{
-			var sut = new TimeSpanValidatorAttribute();
-			var actual = sut.IsValid(new object());
+			MinValue = "00:00:01",
+		};
 
-			Assert.False(actual);
-		}
+		Assert.True(sut.IsValid(TimeSpan.FromSeconds(2)));
+		Assert.True(sut.IsValid(TimeSpan.MaxValue));
+		Assert.False(sut.IsValid(TimeSpan.FromSeconds(0)));
+	}
 
-		[Fact]
-		public void IsValid_WhenOnlyMinValueSet_ThenAllowsAnyValueAboveIt()
+	[Fact]
+	public void IsValid_WhenTimeSpanInRange_ReturnsTrue()
+	{
+		var sut = new TimeSpanValidatorAttribute
 		{
-			var sut = new TimeSpanValidatorAttribute
-			{
-				MinValue = "00:00:01",
-			};
+			MinValue = TimeSpan.FromSeconds(1).ToString(),
+			MaxValue = TimeSpan.FromSeconds(5).ToString(),
+		};
 
-			Assert.True(sut.IsValid(TimeSpan.FromSeconds(2)));
-			Assert.True(sut.IsValid(TimeSpan.MaxValue));
-			Assert.False(sut.IsValid(TimeSpan.FromSeconds(0)));
-		}
+		var actual = sut.IsValid(TimeSpan.FromSeconds(3));
 
-		[Fact]
-		public void IsValid_WhenOnlyMaxValueSet_ThenAllowsAnyValueBelowIt()
+		Assert.True(actual);
+	}
+
+	[Fact]
+	public void IsValid_WhenTimeSpanOutsideRange_ReturnsFalse()
+	{
+		var sut = new TimeSpanValidatorAttribute
 		{
-			var sut = new TimeSpanValidatorAttribute
-			{
-				MinValue = "00:00:01",
-			};
+			MinValue = TimeSpan.FromSeconds(1).ToString(),
+			MaxValue = TimeSpan.FromSeconds(5).ToString(),
+		};
 
-			Assert.True(sut.IsValid(TimeSpan.FromSeconds(2)));
-			Assert.True(sut.IsValid(TimeSpan.MaxValue));
-			Assert.False(sut.IsValid(TimeSpan.FromSeconds(0)));
-		}
+		var actual = sut.IsValid(TimeSpan.FromSeconds(6));
 
-		[Fact]
-		public void IsValid_WhenTimeSpanInRange_ReturnsTrue()
-		{
-			var sut = new TimeSpanValidatorAttribute
-			{
-				MinValue = TimeSpan.FromSeconds(1).ToString(),
-				MaxValue = TimeSpan.FromSeconds(5).ToString(),
-			};
-
-			var actual = sut.IsValid(TimeSpan.FromSeconds(3));
-
-			Assert.True(actual);
-		}
-
-		[Fact]
-		public void IsValid_WhenTimeSpanOutsideRange_ReturnsFalse()
-		{
-			var sut = new TimeSpanValidatorAttribute
-			{
-				MinValue = TimeSpan.FromSeconds(1).ToString(),
-				MaxValue = TimeSpan.FromSeconds(5).ToString(),
-			};
-
-			var actual = sut.IsValid(TimeSpan.FromSeconds(6));
-
-			Assert.False(actual);
-		}
+		Assert.False(actual);
 	}
 }

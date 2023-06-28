@@ -1,4 +1,4 @@
-namespace RestLittle.UI.Views
+namespace TakeABreak.UI.Views
 {
 	partial class ConfigurationFormView
 	{
@@ -38,10 +38,10 @@ namespace RestLittle.UI.Views
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.btnOK = new System.Windows.Forms.Button();
 			this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-			this.tpTimeToIdle = new RestLittle.UI.Views.TimePicker();
-			this.tpMaxBusyTime = new RestLittle.UI.Views.TimePicker();
-			this.tpRestingTime = new RestLittle.UI.Views.TimePicker();
-			this.tpWarningInterval = new RestLittle.UI.Views.TimePicker();
+			this.tpTimeToIdle = new TakeABreak.UI.Views.TimePicker();
+			this.tpMaxBusyTime = new TakeABreak.UI.Views.TimePicker();
+			this.tpRestingTime = new TakeABreak.UI.Views.TimePicker();
+			this.tpWarningInterval = new TakeABreak.UI.Views.TimePicker();
 			((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
 			this.SuspendLayout();
 			// 

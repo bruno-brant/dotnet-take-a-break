@@ -3,21 +3,20 @@
 using System;
 using System.Collections.Generic;
 
-namespace RestLittle.Tests
-{
-	public static class Helper
-	{
-		public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
-		{
-			if (collection is null)
-			{
-				throw new ArgumentNullException(nameof(collection));
-			}
+namespace TakeABreak.Tests;
 
-			foreach (var item in collection)
-			{
-				action(item);
-			}
+public static class Helper
+{
+	public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
+	{
+		if (collection is null)
+		{
+			throw new ArgumentNullException(nameof(collection));
+		}
+
+		foreach (var item in collection)
+		{
+			action(item);
 		}
 	}
 }

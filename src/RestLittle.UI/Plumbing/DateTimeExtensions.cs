@@ -2,7 +2,7 @@
 
 using System;
 
-namespace RestLittle.UI.Plumbing
+namespace TakeABreak.UI.Plumbing
 {
 	/// <summary>
 	/// Extensions for type <see cref="DateTime"/>.

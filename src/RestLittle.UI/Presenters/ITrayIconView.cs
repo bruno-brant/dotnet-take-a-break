@@ -4,7 +4,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace RestLittle.UI.Presenters
+namespace TakeABreak.UI.Presenters
 {
 	/// <summary>
 	/// The view's contract.

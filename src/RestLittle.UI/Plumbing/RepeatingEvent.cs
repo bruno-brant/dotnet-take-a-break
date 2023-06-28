@@ -3,7 +3,7 @@
 using System;
 using System.Threading;
 
-namespace RestLittle.UI.Plumbing
+namespace TakeABreak.UI.Plumbing
 {
 	/// <summary>
 	/// Calls the provided action then waits for the inverval before calling again.

@@ -2,7 +2,7 @@
 
 using System;
 
-namespace RestLittle.UI.Presenters
+namespace TakeABreak.UI.Presenters
 {
 	/// <summary>
 	/// Configuration for <see cref="ITrayIconView"/>.

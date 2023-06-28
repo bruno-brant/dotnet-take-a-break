@@ -2,9 +2,9 @@
 
 using System;
 using System.Windows.Forms;
-using RestLittle.UI.Views;
+using TakeABreak.UI.Views;
 
-namespace RestLittle.UI
+namespace TakeABreak.UI
 {
 	/// <summary>
 	/// This class acts like a controller for the application.
@@ -20,7 +20,10 @@ namespace RestLittle.UI
 		{
 			var restingMonitor = new RestingMonitor(
 				Settings.Default,
-				new UserIdleMonitor(Settings.Default, new InputManager()));
+				new UserIdleMonitor(
+					Settings.Default, 
+					new InputObserver()),
+				new SuspendMonitor());
 
 			_trayIconView = new TrayIconView(restingMonitor);
 			_trayIconView.ExitClicked += TrayIconPresenter_ExitClicked;

@@ -4,52 +4,41 @@ using System;
 using NSubstitute;
 using Xunit;
 
-namespace RestLittle.Tests
+namespace TakeABreak.Tests;
+
+public class UserIdleMonitorTests
 {
-	public class UserIdleMonitorTests
+	private readonly IInputObserver _inputManager = Substitute.For<IInputObserver>();
+
+	[Theory, AutoSubstituteData]
+	public void GetStatus_WhenLastTimeIsLessThanTimeToIdle_StatusIsBusy(IUserIdleMonitorConfiguration configuration)
 	{
-		[Theory, AutoSubstituteData]
-		public void Update_WhenLastTimeIsLessThanTimeToIdle_StatusIsBusy(IUserIdleMonitorConfiguration configuration)
-		{
-			if (configuration is null)
-			{
-				throw new ArgumentNullException(nameof(configuration));
-			}
+		var returnThis = DateTime.Now - (configuration.TimeToIdle - TimeSpan.FromMinutes(1));
 
-			var returnThis = DateTime.Now - (configuration.TimeToIdle - TimeSpan.FromMinutes(1));
-			var inputManager = Substitute.For<IInputManager>();
+		_inputManager
+			.GetLastInputTime()
+			.Returns(returnThis);
 
-			inputManager.GetLastInputTime()
-				.Returns(returnThis);
+		var sut = new UserIdleMonitor(configuration, _inputManager);
 
-			var sut = new UserIdleMonitor(configuration, inputManager);
+		var actual = sut.GetStatus();
 
-			var actual = sut.GetStatus();
+		Assert.Equal(InteractionStatus.Busy, actual);
+	}
 
-			Assert.Equal(InteractionStatus.Busy, actual);
-		}
+	[Theory, AutoSubstituteData]
+	public void GetStatus_WhenLastTimeIsLargerThanMaxBusyTime_StatusIsIdle(IUserIdleMonitorConfiguration configuration)
+	{
+		var returnThis = DateTime.Now - (configuration.TimeToIdle + TimeSpan.FromMinutes(1));
 
-		[Theory, AutoSubstituteData]
-		public void Update_WhenLastTimeIsLargerThanMaxBusyTime_StatusIsIdle(IUserIdleMonitorConfiguration configuration)
-		{
-			if (configuration is null)
-			{
-				throw new ArgumentNullException(nameof(configuration));
-			}
+		_inputManager
+			.GetLastInputTime()
+			.Returns(returnThis);
 
-			var returnThis = DateTime.Now - (configuration.TimeToIdle + TimeSpan.FromMinutes(1));
+		var sut = new UserIdleMonitor(configuration, _inputManager);
 
-			var inputManager = Substitute.For<IInputManager>();
+		var actual = sut.GetStatus();
 
-			inputManager
-				.GetLastInputTime()
-				.Returns(returnThis);
-
-			var sut = new UserIdleMonitor(configuration, inputManager);
-
-			var actual = sut.GetStatus();
-
-			Assert.Equal(InteractionStatus.Idle, actual);
-		}
+		Assert.Equal(InteractionStatus.Idle, actual);
 	}
 }

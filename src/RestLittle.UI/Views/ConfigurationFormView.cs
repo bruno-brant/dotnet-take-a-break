@@ -2,9 +2,9 @@
 
 using System;
 using System.Windows.Forms;
-using RestLittle.UI.Presenters;
+using TakeABreak.UI.Presenters;
 
-namespace RestLittle.UI.Views
+namespace TakeABreak.UI.Views
 {
 	/// <summary>
 	/// Displays a configuration form for the user.

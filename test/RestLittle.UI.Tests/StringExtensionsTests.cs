@@ -2,94 +2,94 @@
 
 using System;
 using AutoFixture.Xunit2;
-using RestLittle.UI.Plumbing;
+using NSubstitute;
+using TakeABreak.UI.Plumbing;
 using Xunit;
 
-namespace RestLittle.UI.Tests
+namespace TakeABreak.UI.Tests;
+
+public class StringExtensionsTests
 {
-	public class StringExtensionsTests
+	[Theory]
+	[AutoData]
+	public void Truncate_LengthIsNegative_Throws(string input)
 	{
-		[Theory]
-		[AutoData]
-		public void Truncate_LengthIsNegative_Throws(string input)
-		{
-			Assert.ThrowsAny<ArgumentOutOfRangeException>(() => input.Truncate(-1));
-		}
+		Assert.ThrowsAny<ArgumentOutOfRangeException>(() => input.Truncate(-1));
+	}
 
-		[Fact]
-		public void Truncate_InputNull_Throws()
-		{
-			Assert.ThrowsAny<ArgumentNullException>(() => StringExtensions.Truncate(null, 1));
-		}
+	[Fact]
+	public void Truncate_InputNull_Throws()
+	{
+		Assert.ThrowsAny<ArgumentNullException>(() => StringExtensions.Truncate(Arg.Any<string>(), 1));
+	}
 
-		[Theory]
-		[AutoData]
-		public void Truncate_LenghtIsZero_ReturnEmptyString(string input)
-		{
-			Assert.Empty(input.Truncate(0));
-		}
+	[Theory]
+	[AutoData]
+	public void Truncate_LenghtIsZero_ReturnEmptyString(string input)
+	{
+		Assert.Empty(input.Truncate(0));
+	}
 
-		[Fact]
-		public void Truncate_SizeEqualsLength_OriginalStringIsReturned()
-		{
-			var expected = "Large string";
+	[Fact]
+	public void Truncate_SizeEqualsLength_OriginalStringIsReturned()
+	{
+		var expected = "Large string";
 
-			var actual = expected.Truncate(expected.Length);
+		var actual = expected.Truncate(expected.Length);
 
-			Assert.Equal(expected, actual);
-		}
+		Assert.Equal(expected, actual);
+	}
 
-		[Fact]
-		public void Truncate_LengthIsGreaterThanString_ReturnsTruncatedString()
-		{
-			const string input = "Large String";
+	[Fact]
+	public void Truncate_LengthIsGreaterThanString_ReturnsTruncatedString()
+	{
+		const string input = "Large String";
 
-			var actual = input.Truncate(input.Length + 1);
+		var actual = input.Truncate(input.Length + 1);
 
-			Assert.Equal(input, actual);
-		}
+		Assert.Equal(input, actual);
+	}
 
-		[Fact]
-		public void Truncate_LengthIsLessThanString_ReturnsTruncatedString()
-		{
-			const string expected = "Large";
+	[Fact]
+	public void Truncate_LengthIsLessThanString_ReturnsTruncatedString()
+	{
+		const string expected = "Large";
 
-			const string input = "Large String";
+		const string input = "Large String";
 
-			var actual = input.Truncate(expected.Length);
+		var actual = input.Truncate(expected.Length);
 
-			Assert.Equal(expected, actual);
-		}
+		Assert.Equal(expected, actual);
+	}
 
-		[Fact]
-		public void Truncate_LengthIsLessThanStringAndEllipsisIsTrue_ReturnsTruncatedString()
-		{
-			const string expected = "La...";
+	[Fact]
+	public void Truncate_LengthIsLessThanStringAndEllipsisIsTrue_ReturnsTruncatedString()
+	{
+		const string expected = "La...";
 
-			const string input = "Large String";
+		const string input = "Large String";
 
-			var actual = input.Truncate(expected.Length, true);
+		var actual = input.Truncate(expected.Length, true);
 
-			Assert.Equal(expected, actual);
-		}
+		Assert.Equal(expected, actual);
+	}
 
-		[Fact]
-		public void Truncate_LengthIsLessThanStringAndEllipsisIsTrue_ReturnsTruncatedString2()
-		{
-			const string expected = "...";
+	[Fact]
+	public void Truncate_LengthIsLessThanStringAndEllipsisIsTrue_ReturnsTruncatedString2()
+	{
+		const string expected = "...";
 
-			const string input = "Large String";
+		const string input = "Large String";
 
-			var actual = input.Truncate(expected.Length, true);
+		var actual = input.Truncate(expected.Length, true);
 
-			Assert.Equal(expected, actual);
-		}
+		Assert.Equal(expected, actual);
+	}
 
-		[Theory, AutoData]
-		public void Truncate_WhenEllipsisTrueAndLengthLessThan3_Throws(string input)
-		{
-			Assert.ThrowsAny<ArgumentException>(() => input.Truncate(2, true));
-			Assert.ThrowsAny<ArgumentException>(() => input.Truncate(1, true));
-		}
+	[Theory, AutoData]
+	public void Truncate_WhenEllipsisTrueAndLengthLessThan3_Throws(string input)
+	{
+		Assert.ThrowsAny<ArgumentException>(() => input.Truncate(2, true));
+		Assert.ThrowsAny<ArgumentException>(() => input.Truncate(1, true));
 	}
 }
