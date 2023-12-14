@@ -25,14 +25,19 @@ jobs:
       run: dotnet test --no-build --verbosity normal
     - name: Publish win64
       run: dotnet publish .\src\RestLittle.UI\TakeABreak.UI.csproj --runtime win-x64 -c Release -o release/win-x64/ --self-contained
-    - name: Publish win86
-      run: dotnet publish .\src\RestLittle.UI\TakeABreak.UI.csproj --runtime win-x86 -c Release -o release/win-x86/ --self-contained    
-    - name: Release win64
+    - name: Package win-x64
+      run: Compress-Archive -Path release/win-x64/ -DestinationPath Take-A-Break-win-x64.zip
+    - name: Publish win-x86
+      run: dotnet publish .\src\RestLittle.UI\TakeABreak.UI.csproj --runtime win-x86 -c Release -o release/win-x86/ --self-contained
+    - name: Package win-x86
+      run: Compress-Archive -Path release/win-x86/ -DestinationPath Take-A-Break-win-x84.zip
+    - name: Create release
       uses: "marvinpinto/action-automatic-releases@latest"
       with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest"
           prerelease: false
-          title: "Release Win-x64 1.0.0.${{ vars.GITHUB_RUN_NUMBER }}-win.x64"
+          title: "1.0.0.${{ vars.GITHUB_RUN_NUMBER }}"
           files: |
-            release/win-x64/**/*.*
+            Take-A-Break-win-x84.zip
+            Take-A-Break-win-x64.zip
