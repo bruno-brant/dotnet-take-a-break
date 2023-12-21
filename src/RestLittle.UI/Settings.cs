@@ -71,5 +71,13 @@ namespace TakeABreak.UI
 			get { return (InteractionStatus)this[nameof(InitialStatus)]; }
 			set { this[nameof(InitialStatus)] = value; }
 		}
+
+		[UserScopedSetting]
+		[DefaultSettingValue("true")]
+		public bool AskToRegisterForStartup
+		{
+			get { return (bool)this[nameof(AskToRegisterForStartup)]; }
+			set { this[nameof(AskToRegisterForStartup)] = value; }
+		}
 	}
 }

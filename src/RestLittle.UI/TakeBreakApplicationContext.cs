@@ -9,14 +9,14 @@ namespace TakeABreak.UI
 	/// <summary>
 	/// This class acts like a controller for the application.
 	/// </summary>
-	public class RestLittleApplicationContext : ApplicationContext
+	public class TakeBreakApplicationContext : ApplicationContext
 	{
 		private readonly TrayIconView _trayIconView;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="RestLittleApplicationContext"/> class.
+		/// Initializes a new instance of the <see cref="TakeBreakApplicationContext"/> class.
 		/// </summary>
-		public RestLittleApplicationContext()
+		public TakeBreakApplicationContext()
 		{
 			var restingMonitor = new RestingMonitor(
 				Settings.Default,

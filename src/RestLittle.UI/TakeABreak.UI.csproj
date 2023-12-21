@@ -15,7 +15,7 @@
 		<RepositoryUrl>https://github.com/bruno-brant/rest-a-little</RepositoryUrl>
 		<RepositoryType>Git</RepositoryType>
 		<NeutralLanguage>en-US</NeutralLanguage>
-		<AssemblyName>rest-a-little</AssemblyName>
+		<AssemblyName>take-a-break</AssemblyName>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
