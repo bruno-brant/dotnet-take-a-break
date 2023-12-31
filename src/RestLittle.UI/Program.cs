@@ -18,6 +18,16 @@ namespace TakeABreak.UI
 		{
 			RegisterApplicationForStartup();
 
+			// Prevent multiple instances of the application
+			using var mutex = new System.Threading.Mutex(true, "TakeABreak+FA403F85-44B1-4B15-9422-631661453E14", out var createdNew);
+
+			if (!createdNew) 
+			{
+				MessageBox.Show("Another instance of this application is already running.", "Take A Break", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				
+				return;
+			}
+
 			Application.SetHighDpiMode(HighDpiMode.SystemAware);
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
