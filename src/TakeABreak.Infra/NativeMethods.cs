@@ -2,12 +2,12 @@
 
 using System.Runtime.InteropServices;
 
-namespace TakeABreak;
+namespace TakeABreak.Infra;
 
 /// <summary>
-/// External functions.
+/// User32 functions.
 /// </summary>
-internal static class NativeMethods
+internal static partial class NativeMethods
 {
 	/// <summary>
 	/// Retrieves the time of the last input event.
@@ -19,10 +19,9 @@ internal static class NativeMethods
 	/// If the function succeeds, the return value is true.
 	/// If the function fails, the return value is false.
 	/// </returns>
-	[DllImport("user32.dll")]
-	public static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
-
-#pragma warning disable IDE1006 // Naming Styles (interop)
+	[LibraryImport("user32.dll")]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	public static partial bool GetLastInputInfo(ref LASTINPUTINFO plii);
 
 	/// <summary>
 	/// Contains the time of the last input.
@@ -50,13 +49,11 @@ internal static class NativeMethods
 		/// <summary>
 		/// Gets or sets the tick count when the last input event was received.
 		/// </summary>
-		public uint DwTime { get => dwTime; set => dwTime = value; }
+		public uint DwTime { readonly get => dwTime; set => dwTime = value; }
 
 		/// <summary>
 		/// Gets or sets the size of the structure, in bytes. This member must be set to sizeof(LASTINPUTINFO).
 		/// </summary>
-		public uint CbSize { get => cbSize; set => cbSize = value; }
+		public uint CbSize { readonly get => cbSize; set => cbSize = value; }
 	}
-
-#pragma warning restore IDE1006 // Naming Styles (interop)
 }

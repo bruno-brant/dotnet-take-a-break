@@ -1,9 +1,11 @@
 // Copyright (c) Bruno Brant. All rights reserved.
 
-namespace TakeABreak;
+namespace TakeABreak.Infra;
 
-/// <inheritdoc/>
-public class InputObserver : IInputObserver
+/// <summary>
+/// Implementation of <see cref="IInputObserver"/> using Win32 API.
+/// </summary>
+public class Win32InputObserver : IInputObserver
 {
 	/// <inheritdoc/>
 	public DateTime GetLastInputTime()

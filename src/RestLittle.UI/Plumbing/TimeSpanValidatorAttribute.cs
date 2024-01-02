@@ -34,17 +34,20 @@ namespace TakeABreak.UI.Plumbing
 
 			if (value is not TimeSpan ts)
 			{
-				return new ValidationResult("Invalid TimeSpan.");
+
+				return new ValidationResult("Invalid TimeSpan.", [validationContext?.MemberName]);
 			}
 
 			if (_minValue is not null && ts < _minValue)
 			{
-				return new ValidationResult($"TimeSpan value '{value}' must be greater or equal to '{MinValue}'");
+				var msg = $"TimeSpan value '{value}' must be greater or equal to '{MinValue}'";
+				return new ValidationResult(msg, [validationContext?.MemberName]);
 			}
 
 			if (_maxValue is not null && ts > _maxValue)
 			{
-				return new ValidationResult($"TimeSpan value '{value}' must be less or equal to '{MaxValue}'");
+				var msg = $"TimeSpan value '{value}' must be less or equal to '{MaxValue}'";
+				return new ValidationResult(msg, [validationContext?.MemberName]);
 			}
 
 			return ValidationResult.Success;

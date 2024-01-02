@@ -9,10 +9,7 @@ public static class Helper
 {
 	public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
 	{
-		if (collection is null)
-		{
-			throw new ArgumentNullException(nameof(collection));
-		}
+		ArgumentNullException.ThrowIfNull(collection);
 
 		foreach (var item in collection)
 		{

@@ -3,80 +3,57 @@
 using System;
 using System.Windows.Forms;
 
-namespace TakeABreak.UI
+namespace TakeABreak.UI;
+
+/// <summary>
+/// Main program entry point.
+/// </summary>
+public static class Program
 {
 	/// <summary>
-	/// Main program entry point.
+	///  The main entry point for the application.
 	/// </summary>
-	public static class Program
+	[STAThread]
+	private static void Main()
 	{
-		/// <summary>
-		///  The main entry point for the application.
-		/// </summary>
-		[STAThread]
-		private static void Main()
+		RegisterApplicationForStartup();
+
+		// Prevent multiple instances of the application
+		using var mutex = new System.Threading.Mutex(true, "TakeABreak+FA403F85-44B1-4B15-9422-631661453E14", out var createdNew);
+
+		if (!createdNew)
 		{
-			RegisterApplicationForStartup();
+			MessageBox.Show("Another instance of this application is already running.", "Take A Break", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-			// Prevent multiple instances of the application
-			using var mutex = new System.Threading.Mutex(true, "TakeABreak+FA403F85-44B1-4B15-9422-631661453E14", out var createdNew);
-
-			if (!createdNew) 
-			{
-				MessageBox.Show("Another instance of this application is already running.", "Take A Break", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				
-				return;
-			}
-
-			Application.SetHighDpiMode(HighDpiMode.SystemAware);
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
-
-			using var context = new TakeBreakApplicationContext();
-
-			Application.Run(context);
+			return;
 		}
 
-		private static void RegisterApplicationForStartup()
+		Application.SetHighDpiMode(HighDpiMode.SystemAware);
+		Application.EnableVisualStyles();
+		Application.SetCompatibleTextRenderingDefault(false);
+
+		using var context = new TakeBreakApplicationContext();
+
+		Application.Run(context);
+	}
+
+	private static void RegisterApplicationForStartup()
+	{
+		if (Settings.Default.AskToRegisterForStartup && !Startup.IsRegistered())
 		{
-			if (Settings.Default.AskToRegisterForStartup && !Startup.IsRegistered())
+			// Show dialog and ask user for confirmation
+			var result = MessageBox.Show(
+				"Would you like to run this application automatically on startup?",
+				"Run on startup", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+			if (result == DialogResult.Yes)
 			{
-				// Show dialog and ask user for confirmation
-				var result = MessageBox.Show(
-					"Would you like to run this application automatically on startup?",
-					"Run on startup", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-				if (result == DialogResult.Yes)
-				{
-					Startup.RegisterApplication();
-				}
-
-				Settings.Default.AskToRegisterForStartup = false;
-
-				Settings.Default.Save();
+				Startup.RegisterApplication();
 			}
+
+			Settings.Default.AskToRegisterForStartup = false;
+
+			Settings.Default.Save();
 		}
-	}
-}
-
-public class Startup
-{
-	/// <summary>
-	/// Register the application to run on startup.
-	/// </summary>
-	public static void RegisterApplication()
-	{
-		using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-
-		key.SetValue("TakeABreak", Application.ExecutablePath);
-	}
-
-	public static bool IsRegistered()
-	{
-		using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-
-		var value = key.GetValue("TakeABreak");
-
-		return key.GetValue("TakeABreak") == Application.ExecutablePath;
 	}
 }

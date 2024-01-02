@@ -41,7 +41,7 @@ namespace TakeABreak.UI.Views
 			// _notifyIcon1
 			// 
 			this._notifyIcon1.ContextMenuStrip = this._trayIconMenuStrip;
-			this._notifyIcon1.Text = "Rest-a-Little";
+			this._notifyIcon1.Text = "Take-A-Break";
 			this._notifyIcon1.Visible = true;
 			// 
 			// _trayIconMenuStrip

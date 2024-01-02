@@ -2,114 +2,29 @@
 
 using System;
 using System.Linq;
+using AutoFixture;
 using AutoFixture.Xunit2;
-using NSubstitute;
-using Xunit;
+using Microsoft.Extensions.Logging;
 
 namespace TakeABreak.Tests;
 
 public class RestingMonitorTests
 {
-	private readonly IUserIdleMonitor _userIdleMonitor = Substitute.For<IUserIdleMonitor>();
+	private readonly IUserInteractionStatusProvider _userIdleMonitor = Substitute.For<IUserInteractionStatusProvider>();
 	private readonly ISuspendMonitor _suspendMonitor = Substitute.For<ISuspendMonitor>();
+	private readonly ILogger<RestingMonitor> _logger = Substitute.For<ILogger<RestingMonitor>>();
+	private readonly Fixture _fixture = new();
 
 	[Theory, AutoSubstituteData]
 	public void Update_WhenStatusAlwaysBusy_TotalTimeEqualsElapsed(IRestingMonitorConfiguration configuration, TimeSpan elapsed)
 	{
-		if (configuration is null)
-		{
-			throw new ArgumentNullException(nameof(configuration));
-		}
-
 		configuration.InitialStatus.Returns(InteractionStatus.Busy);
 		configuration.MaxBusyTime.Returns(elapsed);
 		configuration.RestingTime.Returns(TimeSpan.MaxValue);
 
 		_userIdleMonitor.GetStatus().Returns(InteractionStatus.Busy);
 
-		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor);
-
-		sut.Update(elapsed);
-
-		Assert.Equal(configuration.InitialStatus, sut.LastStatus);
-		Assert.Equal(elapsed, sut.TimeSinceLastStatus);
-	}
-
-	[Theory, AutoSubstituteData]
-	public void Update_StatusChanged_TotalTimeEqualsZero(IRestingMonitorConfiguration configuration, TimeSpan elapsed)
-	{
-		if (configuration is null)
-		{
-			throw new ArgumentNullException(nameof(configuration));
-		}
-
-		var otherStatus = configuration.InitialStatus switch
-		{
-			InteractionStatus.Busy => InteractionStatus.Idle,
-			InteractionStatus.Idle => InteractionStatus.Busy,
-			_ => throw new NotImplementedException(),
-		};
-
-		_userIdleMonitor.GetStatus().Returns(otherStatus);
-
-		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor);
-
-		sut.Update(elapsed);
-
-		Assert.Equal(otherStatus, sut.LastStatus);
-		Assert.Equal(TimeSpan.Zero, sut.TimeSinceLastStatus);
-	}
-
-	[Theory, AutoSubstituteData]
-	public void Update_WhenStatusChanged_TotalTimeEqualsSum(IRestingMonitorConfiguration configuration, TimeSpan[] elapseds)
-	{
-		if (configuration is null)
-		{
-			throw new ArgumentNullException(nameof(configuration));
-		}
-
-		if (elapseds is null)
-		{
-			throw new ArgumentNullException(nameof(elapseds));
-		}
-
-		var otherStatus = configuration.InitialStatus switch
-		{
-			InteractionStatus.Busy => InteractionStatus.Idle,
-			InteractionStatus.Idle => InteractionStatus.Busy,
-			_ => throw new NotImplementedException(),
-		};
-
-		configuration.RestingTime.Returns(TimeSpan.MaxValue);
-
-		_userIdleMonitor.GetStatus().Returns(otherStatus);
-
-		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor);
-
-		foreach (var elapsed in elapseds)
-		{
-			sut.Update(elapsed);
-		}
-
-		Assert.Equal(otherStatus, sut.LastStatus);
-
-		// Skip the first one when the time zeroes out.
-		Assert.Equal(elapseds.Skip(1).Aggregate(TimeSpan.Zero, (acc, cur) => acc + cur), sut.TimeSinceLastStatus);
-	}
-
-	[Theory, AutoSubstituteData]
-	public void Update_WhenInitialStatusIsBusyAndThenBusyAgain_TotalBusyTimeIsElapsed(IRestingMonitorConfiguration configuration, TimeSpan elapsed)
-	{
-		if (configuration is null)
-		{
-			throw new ArgumentNullException(nameof(configuration));
-		}
-
-		configuration.RestingTime.Returns(TimeSpan.MaxValue);
-		configuration.InitialStatus.Returns(InteractionStatus.Busy);
-		_userIdleMonitor.GetStatus().Returns(InteractionStatus.Busy);
-
-		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor);
+		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor, _logger);
 
 		sut.Update(elapsed);
 
@@ -117,17 +32,55 @@ public class RestingMonitorTests
 	}
 
 	[Theory, AutoSubstituteData]
+	public void Update_StatusChanged_TotalTimeEqualsZero(IRestingMonitorConfiguration configuration, TimeSpan elapsed)
+	{
+		// ARRANGE
+		var invertedStatus = configuration.InitialStatus switch
+		{
+			InteractionStatus.Busy => InteractionStatus.Idle,
+			InteractionStatus.Idle => InteractionStatus.Busy,
+			_ => throw new Exception($"Unexpected {nameof(UserStatus)} value '{configuration.InitialStatus}'"),
+		};
+
+		_userIdleMonitor.GetStatus().Returns(invertedStatus);
+
+		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor, _logger);
+
+		// ACT
+
+		sut.Update(elapsed);
+
+		// ASSERT
+
+		Assert.Equal(TimeSpan.Zero, sut.TotalIdleTimeSinceRested);
+		Assert.Equal(TimeSpan.Zero, sut.TotalBusyTimeSinceRested);
+	}
+
+	[Theory, AutoSubstituteData]
+	public void Update_WhenInitialStatusIsBusyAndThenBusyAgain_TotalBusyTimeIsElapsed(IRestingMonitorConfiguration configuration, TimeSpan elapsed)
+	{
+		// ARRANGE
+		configuration.InitialStatus.Returns(InteractionStatus.Busy);
+		configuration.RestingTime.Returns(TimeSpan.MaxValue);
+
+		_userIdleMonitor.GetStatus().Returns(InteractionStatus.Busy);
+
+		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor, _logger);
+
+		// ACT
+		sut.Update(elapsed);
+
+		// ASSERT
+		Assert.Equal(elapsed, sut.TotalBusyTimeSinceRested);
+	}
+
+	[Theory, AutoSubstituteData]
 	public void Update_WhenInitialStatusIsIdleAndThenIdleAgain_TotalIdleTimeIsZero(IRestingMonitorConfiguration configuration, TimeSpan elapsed)
 	{
-		if (configuration is null)
-		{
-			throw new ArgumentNullException(nameof(configuration));
-		}
-
 		configuration.InitialStatus.Returns(InteractionStatus.Idle);
 		_userIdleMonitor.GetStatus().Returns(InteractionStatus.Idle);
 
-		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor);
+		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor, _logger);
 
 		sut.Update(elapsed);
 
@@ -145,7 +98,7 @@ public class RestingMonitorTests
 
 		var busyTime = TimeSpan.FromSeconds(30);
 
-		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor);
+		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor, _logger);
 
 		// Adds lots of busy time
 		_userIdleMonitor.GetStatus().Returns(InteractionStatus.Busy);
@@ -160,7 +113,7 @@ public class RestingMonitorTests
 				sut.Update(TimeSpan.FromSeconds(1));
 			});
 
-		Assert.Equal(InteractionStatus.Idle, sut.LastStatus);
+		Assert.Equal(UserStatus.Rested, sut.UserStatus);
 		Assert.Equal(TimeSpan.Zero, sut.TotalBusyTimeSinceRested);
 		Assert.Equal(TimeSpan.Zero, sut.TotalIdleTimeSinceRested);
 	}
@@ -176,7 +129,7 @@ public class RestingMonitorTests
 
 		var busyTime = TimeSpan.FromSeconds(30);
 
-		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor);
+		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor, _logger);
 
 		// Adds lots of busy time
 		_userIdleMonitor.GetStatus().Returns(InteractionStatus.Busy);
@@ -190,7 +143,7 @@ public class RestingMonitorTests
 		_userIdleMonitor.GetStatus().Returns(InteractionStatus.Busy);
 		sut.Update(TimeSpan.FromSeconds(1));
 
-		Assert.Equal(InteractionStatus.Busy, sut.LastStatus);
+		Assert.Equal(UserStatus.Busy, sut.UserStatus);
 		Assert.Equal(TimeSpan.Zero, sut.TotalIdleTimeSinceRested);
 	}
 
@@ -202,12 +155,12 @@ public class RestingMonitorTests
 
 		_userIdleMonitor.GetStatus().Returns(InteractionStatus.Busy);
 
-		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor);
+		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor, _logger);
 
 		// Adds lots of busy time
 		sut.Update(configuration.MaxBusyTime + TimeSpan.FromSeconds(1));
 
-		Assert.True(sut.MustRest);
+		Assert.Equal(UserStatus.Tired, sut.UserStatus);
 	}
 
 	[Theory, AutoSubstituteData]
@@ -216,19 +169,19 @@ public class RestingMonitorTests
 		_userIdleMonitor.GetStatus().Returns(InteractionStatus.Busy);
 		configuration.InitialStatus.Returns(InteractionStatus.Busy);
 
-		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor);
+		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor, _logger);
 
 		// Adds lots of busy time
 		sut.Update(configuration.MaxBusyTime + new TimeSpan(-1));
 
-		Assert.False(sut.MustRest);
+		Assert.NotEqual(UserStatus.Tired, sut.UserStatus);
 	}
 
 	[Theory, AutoSubstituteData]
 	public void Update_WhenComputerSuspendedSinceLastUpdate_ResetTimers(IRestingMonitorConfiguration configuration)
 	{
 		// ARRANGE
-		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor);
+		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor, _logger);
 
 		// ACT
 
@@ -254,6 +207,39 @@ public class RestingMonitorTests
 		sut.Update(TimeSpan.FromSeconds(30));
 
 		// ASSERT
-		Assert.Equal(TimeSpan.FromSeconds(30), sut.TotalBusyTimeSinceRested);
+		Assert.Equal(TimeSpan.Zero, sut.TotalBusyTimeSinceRested);
+	}
+
+	[Fact]
+	public void Update_WhenComputerSuspendedAndNoTimeElapsed_ResetTimers()
+	{
+		// ARRANGE
+		var configuration = Substitute.For<IRestingMonitorConfiguration>();
+		configuration.InitialStatus.Returns(InteractionStatus.Busy);
+		configuration.MaxBusyTime.Returns(TimeSpan.FromMinutes(25));
+		configuration.RestingTime.Returns(TimeSpan.FromMinutes(5));
+
+		var sut = new RestingMonitor(configuration, _userIdleMonitor, _suspendMonitor, _logger);
+
+		// ACT
+
+		// User is busy...
+		_userIdleMonitor
+			.GetStatus()
+			.Returns(InteractionStatus.Busy);
+
+		// And needs resting
+		sut.Update(configuration.MaxBusyTime + TimeSpan.FromMinutes(2));
+
+		// Computer was suspended just now
+		_suspendMonitor
+			.LastResumeTime
+			.Returns(DateTime.Now);
+
+		// Update right now
+		sut.Update(TimeSpan.FromSeconds(0));
+
+		// ASSERT
+		Assert.NotEqual(UserStatus.Tired, sut.UserStatus);
 	}
 }

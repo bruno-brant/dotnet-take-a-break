@@ -12,16 +12,11 @@ namespace TakeABreak.UI.Tests.PresenterTests;
 
 public class ConfigurationFormPresenterTests
 {
-	private readonly Fixture _fixture = new ();
+	private readonly Fixture _fixture = new();
 
 	[Theory, AutoData]
 	public void Load_CarriesDataFromModel(Settings model)
 	{
-		if (model is null)
-		{
-			throw new ArgumentNullException(nameof(model));
-		}
-
 		var view = Substitute.For<IConfigurationFormView>();
 
 		using (new ConfigurationFormPresenter(view, model))
@@ -38,11 +33,6 @@ public class ConfigurationFormPresenterTests
 	[Theory, AutoData]
 	public void FormCancelled_ClosesForm(Settings model)
 	{
-		if (model is null)
-		{
-			throw new ArgumentNullException(nameof(model));
-		}
-
 		var view = Substitute.For<IConfigurationFormView>();
 
 		using (new ConfigurationFormPresenter(view, model))
@@ -56,10 +46,7 @@ public class ConfigurationFormPresenterTests
 	[Theory, AutoData]
 	public void FormAccepted_DataIsValid_UpdatesModelAndClosesForm(Settings model, [Range(1, 20)] int time)
 	{
-		if (model is null)
-		{
-			throw new ArgumentNullException(nameof(model));
-		}
+		model.RestingMonitorUpdateInterval = TimeSpan.FromSeconds(time);
 
 		var view = Substitute.For<IConfigurationFormView>();
 
@@ -93,10 +80,7 @@ public class ConfigurationFormPresenterTests
 	[Theory, AutoData]
 	public void FormAccepted_DataIsInvalid_SetErrorsOnView(Settings model)
 	{
-		if (model is null)
-		{
-			throw new ArgumentNullException(nameof(model));
-		}
+		model.RestingMonitorUpdateInterval = TimeSpan.FromSeconds(1);
 
 		var view = Substitute.For<IConfigurationFormView>();
 

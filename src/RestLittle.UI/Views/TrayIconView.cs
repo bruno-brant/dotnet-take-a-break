@@ -3,110 +3,66 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using TakeABreak.UI.Models;
 using TakeABreak.UI.Presenters;
 
-namespace TakeABreak.UI.Views
+namespace TakeABreak.UI.Views;
+
+/// <summary>
+/// Implements an icon that is available at the system tray to control the
+/// application.
+/// </summary>
+public partial class TrayIconView : UserControl, ITrayIconView
 {
 	/// <summary>
-	/// Implements an icon that is available at the system tray to control the
-	/// application.
+	/// Initializes a new instance of the <see cref="TrayIconView"/> class.
 	/// </summary>
-	public partial class TrayIconView : UserControl, ITrayIconView
+	/// <param name="restingMonitor">
+	/// Dependency. Service that monitors the working and resting of users.
+	/// </param>
+	public TrayIconView(IRestingMonitor restingMonitor)
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="TrayIconView"/> class.
-		/// </summary>
-		/// <param name="restingMonitor">
-		/// Dependency. Service that monitors the working and resting of users.
-		/// </param>
-		public TrayIconView(IRestingMonitor restingMonitor)
-		{
-			InitializeComponent();
-
-			var trayIconModel = new TrayIconModel(restingMonitor);
-
-			components.Add(trayIconModel);
+		InitializeComponent();
 
 #pragma warning disable CA2000 // Dispose objects before losing scope
 
-			// TODO: inject Settings
-			var trayIconPresenter = new TrayIconPresenter(Settings.Default, this, trayIconModel);
-			components.Add(trayIconPresenter);
+		// TODO: inject Settings
+		var trayIconPresenter = new TrayIconPresenter(Settings.Default, this, restingMonitor);
+		components.Add(trayIconPresenter);
 
 #pragma warning restore CA2000 // Dispose objects before losing scope
+	}
+
+	/// <inheritdoc/>
+	public event EventHandler ShowConfigurationClicked
+	{
+		add { _configurationMenuItem.Click += value; }
+		remove { _configurationMenuItem.Click -= value; }
+	}
+
+	/// <inheritdoc/>
+	public event EventHandler ShowAboutClicked;
+
+	/// <inheritdoc/>
+	public event EventHandler PauseUnpauseClicked;
+
+	/// <inheritdoc/>
+	public event EventHandler ExitClicked
+	{
+		add { _exitMenuItem.Click += value; }
+		remove { _exitMenuItem.Click -= value; }
+	}
+
+	/// <inheritdoc/>
+	public Icon Icon
+	{
+		get
+		{
+			return _notifyIcon1.Icon;
 		}
 
-		/// <inheritdoc/>
-		public event EventHandler ShowConfigurationClicked
+		set
 		{
-			add { _configurationMenuItem.Click += value; }
-			remove { _configurationMenuItem.Click -= value; }
-		}
-
-		/// <inheritdoc/>
-		public event EventHandler ShowAboutClicked;
-
-		/// <inheritdoc/>
-		public event EventHandler PauseUnpauseClicked;
-
-		/// <inheritdoc/>
-		public event EventHandler ExitClicked
-		{
-			add { _exitMenuItem.Click += value; }
-			remove { _exitMenuItem.Click -= value; }
-		}
-
-		/// <inheritdoc/>
-		public Icon Icon
-		{
-			get
-			{
-				return _notifyIcon1.Icon;
-			}
-
-			set
-			{
-				Action impl = () => _notifyIcon1.Icon = value;
-
-				if (InvokeRequired)
-				{
-					BeginInvoke(impl);
-				}
-				else
-				{
-					impl();
-				}
-			}
-		}
-
-		/// <inheritdoc/>
-		public string Status
-		{
-			get
-			{
-				return _notifyIcon1.Text;
-			}
-
-			set
-			{
-				Action impl = () => _notifyIcon1.Text = value;
-
-				if (InvokeRequired)
-				{
-					BeginInvoke(impl);
-				}
-				else
-				{
-					impl();
-				}
-			}
-		}
-
-		/// <inheritdoc/>
-		public void ShowBalloonTip(int timeout, string tipTitle, string tipText, ToolTipIcon tipIcon)
-		{
-			Action impl = () => _notifyIcon1.ShowBalloonTip(timeout, tipTitle, tipText, tipIcon);
+			Action impl = () => _notifyIcon1.Icon = value;
 
 			if (InvokeRequired)
 			{
@@ -116,6 +72,44 @@ namespace TakeABreak.UI.Views
 			{
 				impl();
 			}
+		}
+	}
+
+	/// <inheritdoc/>
+	public string Status
+	{
+		get
+		{
+			return _notifyIcon1.Text;
+		}
+
+		set
+		{
+			var impl = () => _notifyIcon1.Text = value;
+
+			if (InvokeRequired)
+			{
+				BeginInvoke(impl);
+			}
+			else
+			{
+				impl();
+			}
+		}
+	}
+
+	/// <inheritdoc/>
+	public void ShowBalloonTip(int timeout, string tipTitle, string tipText, ToolTipIcon tipIcon)
+	{
+		Action impl = () => _notifyIcon1.ShowBalloonTip(timeout, tipTitle, tipText, tipIcon);
+
+		if (InvokeRequired)
+		{
+			BeginInvoke(impl);
+		}
+		else
+		{
+			impl();
 		}
 	}
 }
