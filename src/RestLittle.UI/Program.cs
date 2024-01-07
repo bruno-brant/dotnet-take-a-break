@@ -46,14 +46,50 @@ public static class Program
 				"Would you like to run this application automatically on startup?",
 				"Run on startup", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-			if (result == DialogResult.Yes)
-			{
-				Startup.RegisterApplication();
+				if (result == DialogResult.Yes)
+				{
+					Startup.RegisterApplication();
+				} 
+				else
+				{
+					Settings.Default.AskToRegisterForStartup = false;
+					Settings.Default.Save();
+				}
 			}
-
-			Settings.Default.AskToRegisterForStartup = false;
-
-			Settings.Default.Save();
 		}
+	}
+}
+
+public class Startup
+{
+	// The registry key where the startup applications are stored
+	private const string StartupApps = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+
+	// The name of the application
+	private const string AppKey = "TakeABreak";
+
+	/// <summary>
+	/// Register the application to run on startup.
+	/// </summary>
+	public static void RegisterApplication()
+	{
+		using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(StartupApps, true);
+
+		key.SetValue(AppKey, Application.ExecutablePath);
+	}
+
+	/// <summary>
+	/// Check if the application is registered to run on startup.
+	/// </summary>
+	/// <returns>
+	/// <see cref="true"/> if the application is registered to run on startup; <see cref="false"/> otherwise."
+	/// </returns>
+	public static bool IsRegistered()
+	{
+		using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(StartupApps, true);
+
+		var value = key.GetValue(AppKey);
+
+		return value == Application.ExecutablePath;
 	}
 }
