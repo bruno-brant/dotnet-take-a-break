@@ -1,6 +1,9 @@
 // Copyright (c) Bruno Brant. All rights reserved.
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using TakeABreak.UI.Plumbing;
 using Xunit;
 
@@ -78,5 +81,27 @@ public class TimeSpanValidatorAttributeTests
 		var actual = sut.IsValid(TimeSpan.FromSeconds(6));
 
 		Assert.False(actual);
+	}
+
+	[Fact]
+	public void IsValid_WhenTimeSpanOutsideRange_NameTheCorrectMember()
+	{
+		// ARRANGE
+		var foo = new Foo { Bar = TimeSpan.Zero };
+
+		// ACT
+		var actual = Validator2.TryValidateObject(foo, out var validationResults);
+
+		// ASSERT
+		Assert.False(actual);
+		var result = Assert.Single(validationResults);
+
+		Assert.Equal(nameof(Foo.Bar), result.MemberNames.Single());
+	}
+
+	private class Foo
+	{
+		[TimeSpanValidator(MinValue = "00:00:01")]
+		public TimeSpan Bar { get; set; }
 	}
 }

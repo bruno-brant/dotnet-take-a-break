@@ -1,7 +1,5 @@
 // Copyright (c) Bruno Brant. All rights reserved.
 
-using System;
-
 namespace TakeABreak;
 
 /// <summary>

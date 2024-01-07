@@ -3,9 +3,9 @@
 namespace TakeABreak;
 
 /// <summary>
-/// Monitors if the user has rested a little in a certain interval.
+/// Monitors the current status of the user - whether he's using the computer or not.
 /// </summary>
-public interface IUserIdleMonitor
+public interface IUserInteractionStatusProvider
 {
 	/// <summary>
 	///     Gets the current usage status of the computer.

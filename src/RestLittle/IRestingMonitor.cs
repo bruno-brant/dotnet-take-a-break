@@ -1,7 +1,5 @@
 // Copyright (c) Bruno Brant. All rights reserved.
 
-using System;
-
 namespace TakeABreak;
 
 /// <summary>
@@ -13,17 +11,7 @@ public interface IRestingMonitor
 	/// <summary>
 	/// Gets the last status of the user.
 	/// </summary>
-	InteractionStatus LastStatus { get; }
-
-	/// <summary>
-	/// Gets a value indicating whether the user must rest.
-	/// </summary>
-	bool MustRest { get; }
-
-	/// <summary>
-	/// Gets time passed since the last status is the current.
-	/// </summary>
-	TimeSpan TimeSinceLastStatus { get; }
+	UserStatus UserStatus { get; }
 
 	/// <summary>
 	///     Gets the accumulated WORKING time since the user was last considered rested.

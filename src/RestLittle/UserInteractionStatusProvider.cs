@@ -1,14 +1,14 @@
 // Copyright (c) Bruno Brant. All rights reserved.
 
-namespace TakeABreak;
+namespace TakeABreak.Infra;
 
 /// <inheritdoc/>
-public class UserIdleMonitor : IUserIdleMonitor
+public class UserInteractionStatusProvider : IUserInteractionStatusProvider
 {
 	/// <summary>
 	/// Configurations for this service.
 	/// </summary>
-	private readonly IUserIdleMonitorConfiguration _configuration;
+	private readonly IUserInteractionProviderConfiguration _configuration;
 
 	/// <summary>
 	/// Dependency. Used to obtain the last time the user interacted with the computer.
@@ -16,7 +16,7 @@ public class UserIdleMonitor : IUserIdleMonitor
 	private readonly IInputObserver _inputManager;
 
 	/// <summary>
-	///     Initializes a new instance of the <see cref="UserIdleMonitor"/> class.
+	///     Initializes a new instance of the <see cref="UserInteractionStatusProvider"/> class.
 	/// </summary>
 	/// <param name="configuration">
 	///     The configuration for the monitor.
@@ -24,7 +24,8 @@ public class UserIdleMonitor : IUserIdleMonitor
 	/// <param name="inputManager">
 	///     Allows to check the last time the user has used an input device.
 	/// </param>
-	public UserIdleMonitor(IUserIdleMonitorConfiguration configuration, IInputObserver inputManager)
+	public UserInteractionStatusProvider(
+		IUserInteractionProviderConfiguration configuration, IInputObserver inputManager)
 	{
 		_configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 		_inputManager = inputManager ?? throw new ArgumentNullException(nameof(inputManager));

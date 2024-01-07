@@ -14,24 +14,23 @@ public class TrayIconPresenterTests
 	[Fact]
 	public void MonitorUpdated_CallShowBalloonOnlyIfUserIsntAway()
 	{
-		var configuration = Substitute.For<ITrayIconViewConfiguration>();
+		var configuration = Substitute.For<ITrayIconConfiguration>();
 		configuration.WarningInterval.Returns(TimeSpan.Zero);
+		configuration.RestingMonitorUpdateInterval.Returns(TimeSpan.FromMilliseconds(50));
 
 		var iconView = Substitute.For<ITrayIconView>();
 
-		var model = Substitute.For<ITrayIconModel>();
-		model.MustRest.Returns(true);
-		model.LastStatus.Returns(Models.UserStatus.Resting);
+		var model = Substitute.For<IRestingMonitor>();
+		model.UserStatus.Returns(UserStatus.Rested);
 
 		using var sut = new TrayIconPresenter(configuration, iconView, model);
 
 		// ACT
-		Thread.Sleep(1); // make sure some time has been elapsed
-		model.RestingMonitorUpdated += Raise.Event();
+		Thread.Sleep(TimeSpan.FromMilliseconds(100)); // make sure some time has been elapsed
 
 		// ASSERT
 		iconView
 			.DidNotReceiveWithAnyArgs()
-			.ShowBalloonTip(0, Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ToolTipIcon>());
+			.ShowBalloonTip(Arg.Any<int>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ToolTipIcon>());
 	}
 }

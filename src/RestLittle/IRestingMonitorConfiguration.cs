@@ -5,7 +5,7 @@ using System;
 namespace TakeABreak;
 
 /// <summary>
-/// Configuration for <see cref="UserIdleMonitor"/>.
+/// Configuration for <see cref="RestingMonitor"/>.
 /// </summary>
 public interface IRestingMonitorConfiguration
 {
@@ -20,7 +20,7 @@ public interface IRestingMonitorConfiguration
 	public TimeSpan RestingTime { get; }
 
 	/// <summary>
-	/// Gets the initial status of the <see cref="RestingMonitor"/>.
+	/// Gets the initial status of the user (whether he's idle or busy).
 	/// </summary>
 	public InteractionStatus InitialStatus { get; }
 }
